@@ -30,32 +30,32 @@ char *substring(char *s, int start, int len){
 long long perm(int *count, int index, char *s){
   long long n;
   char *left;
-  if (strlen(s) == 0) return 0;
-  if (strlen(s) == 1) {
-    if (index == 0) { //deal with single digits
+  printf("perm (%d, %d, %s)\n", *count, index, s);
+  if ( strlen(s) == 0 ) return 0; //bad input
+
+  if ( index > strlen( s ) ) return 0; //end condition
+
+  if ( strlen( s ) == 1 ) {
+    if ( index == 0 ) { //deal with single digits
       if ( is_ugly( atoll( s ) ) )
 	(*count)++;
     }
     return atoll(s);
   }
-  n = 0;
-  printf("perm (%d, %d, %s)\n", *count, index, s);
-  for(int i=index; i < strlen(s); i++){
-    left = substring(s, i, index);
-    //printf("left %s\n", left);
-    n = atoll(left);
-    n += perm(count, i + 1, left);
-    if( is_ugly(n) ){
-      (*count)++;
-    }
-    left = substring(s, i, strlen(s) - i);
-    n = atoll(left);
-    n -= perm(count, i + 1, left);
-    if( is_ugly(n) ){
-      (*count)++;
-    }
+
+
+  left = substring( s, index, strlen( s ) - index );
+  n = atoll( left );
+  n += perm( count, index + 1, left );
+  if( is_ugly( n ) ){
+    ( *count )++;
   }
-  printf("%lld\n", n);
+  n = atoll( left );
+  n -= perm( count, index + 1, left );
+  if( is_ugly( n ) ){
+    ( *count )++;
+  }
+  printf( "%lld\n", n );
   return n;  
 }
 
@@ -72,7 +72,8 @@ int main(int argc, char **argv){
   while ( (fgets(b, SIZE, f) != NULL) ){
     ugly = 0;
     chomp(b);
-    perm(&ugly, 0, &b[0]);
+    printf( "START: %s\n", b);
+    perm(&ugly, 0, b);
     printf ("RESULT: %d\n", ugly);
   }
   fclose(f);
