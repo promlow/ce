@@ -20,36 +20,19 @@ object Main extends App {
   }
 
   def telephoneWords(xs: List[Int], map: HashMap[Int, List[String]]): List[String] = {
-
-    def perms(s: String, ys: List[List[String]]): String = ys match {
+    def genString(s: String, ys: List[String]): String = ys match {
       case Nil => s
-      case y :: Nil => perms(y.head, List(y.tail))
-      case y :: ys => s + perms(y.head, ys)
+      case y :: Nil => s + genString(y, Nil)
+      case y :: ys => s + genString(y, ys.tail)
     }
 
-
-    def permutations(s: List[String], ys: List[List[String]]): List[String] = ys match {
-      case Nil => s match {
-	case Nil => Nil
-	case s :: Nil => s :: Nil
-	case s :: ss => s :: permutations(ss, Nil)
-      }
-      case y :: Nil => s match {
-	case Nil => permutations(y, Nil)
-	case s :: Nil => s :: permutations(y, Nil)
-	case s :: ss => s :: permutations(ss, y :: Nil)
-      }
-      case y :: ys => s match {
-	case Nil => permutations(y, ys)
-	case s :: Nil => s :: permutations(y, ys)
-	case s :: ss => s :: permutations(ss, y :: ys)
-      }
-    }
-    
     val keys = for (x <- xs) yield map(x)
     println(keys)
-    println(perms(keys.head.head, keys.tail))
-    permutations(keys.head, keys.tail)
+
+    //for (k <- keys) if (keys.head != k) println(genString(keys.head.head, k))
+    for (k <- keys) println(k)
+
+    Nil
   }
 
 }
